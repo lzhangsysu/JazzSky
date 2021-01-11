@@ -1,0 +1,45 @@
+module.exports.descriptors = [
+    'Dark',
+    'Vibrant',
+    'Smooth',
+    'Trendy',
+    'Swing',
+    'Moody',
+    'Drunk',
+    'Smokey',
+    'Classic',
+    'Relaxing',
+    'Romantic',
+    'Crowded',
+    'Passionate',
+    'Experimental',
+    'Sour',
+    'Bosa Nova',
+    'Funky',
+    'Blues'
+]
+
+module.exports.places = [
+    'Roof Top',
+    'Underground',
+    'Main Street',
+    'Village',
+    'Private',
+    'Theatre',
+    'Uptown',
+    'Midtown',
+    'Downtown',
+    'Park',
+    'Hotel',
+    'Club',
+    'Dive Bar',
+    'Country Club',
+    'Business Suit',
+    'School',
+    'Community',
+    'High-end Neighborhood',
+    'Streetside',
+    'Cafe',
+    'Train Station'
+]
+

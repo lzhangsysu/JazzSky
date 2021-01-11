@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Show</title>
+</head>
+<body>
+    <h1><%= jazzbar.title %></h1>
+    <h2><%= jazzbar.location %></h2>
+    <p><a href="/jazzbars/<%= jazzbar._id %>/edit">Edit</a></p>
+    <p>
+        <form action="/jazzbars/<%= jazzbar._id %>?_method=DELETE" method="POST">
+            <button>DELETE</button>
+        </form>
+    </p>
+    <footer>
+        <a href="/jazzbars">All Jazz Bars</a>
+    </footer>
+</body>
+</html>

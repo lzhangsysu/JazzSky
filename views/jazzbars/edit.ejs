@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Jazz Bar</title>
+</head>
+<body>
+    <h1>Edit Jazz Bar</h1>
+    <form action="/jazzbars/<%= jazzbar._id%>?_method=PUT" method="POST">
+        <div>
+            <label for="title">Title</label>
+            <input type="text" id="title" name="jazzbar[title]" value="<%= jazzbar.title %>">
+        </div>
+        <div>
+            <label for="location">Location</label>
+            <input type="text" id="location" name="jazzbar[location]" value="<%= jazzbar.location %>">
+        </div>
+        <button>Update Jazz Bar</button>
+    </form>
+    <a href="/jazzbars/<%= jazzbar._id %> ">Back</a>
+</body>
+</html>

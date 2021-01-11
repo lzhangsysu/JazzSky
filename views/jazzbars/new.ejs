@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Jazz Bar</title>
+</head>
+<body>
+    <form action="/jazzbars" method="POST">
+        <div>
+            <label for="title">Title</label>
+            <input type="text" id="title" name="jazzbar[title]">
+        </div>
+        <div>
+            <label for="location">Location</label>
+            <input type="text" id="location" name="jazzbar[location]">
+        </div>
+        <button>Add Jazz Bar</button>
+    </form>
+    <a href="/jazzbars">All Jazz Bars</a>
+</body>
+</html>
