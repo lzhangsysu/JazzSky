@@ -1,22 +1,36 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>New Jazz Bar</title>
-</head>
-<body>
-    <form action="/jazzbars" method="POST">
-        <div>
-            <label for="title">Title</label>
-            <input type="text" id="title" name="jazzbar[title]">
+<% layout('layouts/boilerplate') %>
+    <div class="row">
+        <h1 class="text-center">New Jazz Bar</h1>
+        <div class="col-6 offset-3">
+            <form action="/jazzbars" method="POST">
+                <div class="mb-3">
+                    <label class="form-label" for="title">Title</label>
+                    <input class="form-control" type="text" id="title" name="jazzbar[title]">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="location">Location</label>
+                    <input class="form-control" type="text" id="location" name="jazzbar[location]">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="image">Image Url</label>
+                    <input class="form-control" type="text" id="image" name="jazzbar[image]">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="price">Price</label>
+                    <div class="input-group">
+                        <span class="input-group-text" id="price-label">$</span>
+                        <input type="text" class="form-control" id="price" placeholder="0.00" aria-label="price"
+                            aria-describedby="price-label" name="jazzbar[price]">
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="description">Description</label>
+                    <textarea class="form-control" type="text" id="description" name="jazzbar[description]"></textarea>
+                </div>
+                <div class="mb-3">
+                    <button class="btn btn-success">Add Jazz Bar</button>
+                </div>
+            </form>
+            <a href="/jazzbars">All Jazz Bars</a>
         </div>
-        <div>
-            <label for="location">Location</label>
-            <input type="text" id="location" name="jazzbar[location]">
-        </div>
-        <button>Add Jazz Bar</button>
-    </form>
-    <a href="/jazzbars">All Jazz Bars</a>
-</body>
-</html>
+    </div>

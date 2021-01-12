@@ -1,19 +1,24 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jazz Bars</title>
-</head>
-<body>
+<% layout('layouts/boilerplate') %>
     <h1>All Jazz Bars</h1>
     <div>
         <a href="/jazzbars/new">Add Jazz Bar</a>
     </div>
-    <ul>
-        <% for (let bar of jazzbars) { %>
-            <li><a href="jazzbars/<%= bar._id %>"><%= bar.title %></a></li>
-        <% } %> 
-    </ul>
-</body>
-</html>
+    <% for (let jazzbar of jazzbars) { %>
+        <div class="card mb-3">
+            <div class="row">
+                <div class="col-md-4">
+                    <img src="<%= jazzbar.image %> " alt="" class="img-fluid">
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h5 class="card-title"><%= jazzbar.title %> </h5>
+                        <p class="card-text"><%= jazzbar.description %> </p>
+                        <p class="card-text">
+                            <small class="text-muted"><%= jazzbar.location %> </small>
+                        </p>
+                        <a href="/jazzbars/<%= jazzbar._id %>" class="btn btn-primary">View <%= jazzbar.title %> </a>
+                    </div>
+                </div>
+            </div>
+        </div> 
+    <% } %>
