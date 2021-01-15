@@ -3,10 +3,11 @@ const path = require('path');
 const mongoose = require('mongoose');
 const ejsMate = require('ejs-mate');
 const methodOverride = require('method-override');
-const { jazzbarSchema } = require('./joiSchemas.js');
+const { jazzbarSchema, reviewSchema } = require('./joiSchemas.js');
 const catchAsync = require('./utils/catchAsync');
 const ExpressError = require('./utils/ExpressError');
 const Jazzbar = require('./models/jazzbar');
+const Review = require('./models/review');
 
 mongoose.connect('mongodb://localhost:27017/jazz-sky', {
     useNewUrlParser: true,
@@ -30,7 +31,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.urlencoded({ extended: true })); // body parser
 app.use(methodOverride('_method'));
 
-// middleware to validate jazz bar data using Joi
+// middlewares to validate data using Joi
 const validateJazzBar = (req, res, next) => {
     const { error } = jazzbarSchema.validate(req.body);
     if (error) {
@@ -41,12 +42,28 @@ const validateJazzBar = (req, res, next) => {
     }
 }
 
+const validateReview = (req, res, next) => {
+    const { error } = reviewSchema.validate(req.body);
+    // console.log(error);
+    if (error) {
+        const errMsg = error.details.map(el => el.message).join(',');
+        throw new ExpressError(errMsg, 400);
+    } else {
+        next();
+    }
+}
+
+
 // home page
 app.get('/', (req, res) => {
     res.render('home');
 });
 
-// index page
+/**
+ * JAZZ BAR ROUTES
+ */
+
+// index page: all bars
 app.get('/jazzbars', catchAsync(async (req, res) => {
     const jazzbars = await Jazzbar.find({});
     res.render('jazzbars/index', { jazzbars });
@@ -65,10 +82,10 @@ app.post('/jazzbars', validateJazzBar, catchAsync(async (req, res, next) => {
     res.redirect(`/jazzbars/${jazzbar._id}`);
 }));
 
-// show details page
+// show bar details page
 app.get('/jazzbars/:id', catchAsync(async (req, res) => {
     const { id } = req.params;
-    const jazzbar = await Jazzbar.findById(id);
+    const jazzbar = await Jazzbar.findById(id).populate('reviews');
     res.render('jazzbars/show', { jazzbar });
 }));
 
@@ -85,12 +102,36 @@ app.put('/jazzbars/:id', validateJazzBar, catchAsync(async (req, res) => {
     res.redirect(`/jazzbars/${jazzbar._id}`);
 }));
 
-// delete
+// delete bar
 app.delete('/jazzbars/:id', catchAsync(async (req, res) => {
     const { id } = req.params;
     await Jazzbar.findByIdAndDelete(id);
     res.redirect('/jazzbars');
 }));
+
+
+/**
+ * REVIEW ROUTES
+ */
+
+// add review
+app.post('/jazzbars/:id/reviews', validateReview, catchAsync(async (req, res) => {
+    const { id } = req.params;
+    const jazzbar = await Jazzbar.findById(id);
+    const review = new Review(req.body.review);
+    jazzbar.reviews.push(review);
+    await review.save();
+    await jazzbar.save();
+    res.redirect(`/jazzbars/${jazzbar._id}`);
+}))
+
+// delete review
+app.delete('/jazzbars/:id/reviews/:reviewId', catchAsync(async (req, res) => {
+    const { id, reviewId } = req.params;
+    await Jazzbar.findByIdAndUpdate(id, { $pull: { reviews: reviewId }}); // find bar and update by remove one review using reviewId
+    await Review.findByIdAndDelete(reviewId);
+    res.redirect(`/jazzbars/${id}`);
+}))
 
 // all request, on all other paths, generate an ExpressError
 app.all('*', (req, res, next) => {
