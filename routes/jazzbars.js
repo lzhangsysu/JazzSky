@@ -34,6 +34,7 @@ router.post('/', validateJazzBar, catchAsync(async (req, res, next) => {
     // if (!req.body.jazzbar) throw new ExpressError('Invalid Jazz Bar Data', 400);
     const jazzbar = new Jazzbar(req.body.jazzbar);
     await jazzbar.save();
+    req.flash('success', 'Successfully added a new jazz bar!');
     res.redirect(`/jazzbars/${jazzbar._id}`);
 }));
 
@@ -41,12 +42,20 @@ router.post('/', validateJazzBar, catchAsync(async (req, res, next) => {
 router.get('/:id', catchAsync(async (req, res) => {
     const { id } = req.params;
     const jazzbar = await Jazzbar.findById(id).populate('reviews');
+    if (!jazzbar) {
+        req.flash('error', 'Cannot find that jazz bar!');
+        return res.redirect('/jazzbars');
+    }
     res.render('jazzbars/show', { jazzbar });
 }));
 
 // update bar: form
 router.get('/:id/edit', catchAsync(async (req, res) => {
-    const jazzbar = await Jazzbar.findById(req.params.id)
+    const jazzbar = await Jazzbar.findById(req.params.id);
+    if (!jazzbar) {
+        req.flash('error', 'Cannot find that jazz bar!');
+        return res.redirect('/jazzbars');
+    }
     res.render('jazzbars/edit', { jazzbar });
 }));
 
@@ -54,6 +63,7 @@ router.get('/:id/edit', catchAsync(async (req, res) => {
 router.put('/:id', validateJazzBar, catchAsync(async (req, res) => {
     const { id } = req.params;
     const jazzbar = await Jazzbar.findByIdAndUpdate(id, { ...req.body.jazzbar });
+    req.flash('success', 'Successfully updated jazz bar!');
     res.redirect(`/jazzbars/${jazzbar._id}`);
 }));
 
@@ -61,6 +71,7 @@ router.put('/:id', validateJazzBar, catchAsync(async (req, res) => {
 router.delete('/:id', catchAsync(async (req, res) => {
     const { id } = req.params;
     await Jazzbar.findByIdAndDelete(id);
+    req.flash('success', 'Successfully deleted jazz bar!');
     res.redirect('/jazzbars');
 }));
 

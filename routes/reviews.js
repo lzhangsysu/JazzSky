@@ -29,6 +29,7 @@ router.post('/', validateReview, catchAsync(async (req, res) => {
     jazzbar.reviews.push(review);
     await review.save();
     await jazzbar.save();
+    req.flash('success', 'Created new review!');
     res.redirect(`/jazzbars/${jazzbar._id}`);
 }))
 
@@ -37,6 +38,7 @@ router.delete('/:reviewId', catchAsync(async (req, res) => {
     const { id, reviewId } = req.params;
     await Jazzbar.findByIdAndUpdate(id, { $pull: { reviews: reviewId }}); // find bar and update by remove one review using reviewId
     await Review.findByIdAndDelete(reviewId);
+    req.flash('success', 'Successfully deleted review!');
     res.redirect(`/jazzbars/${id}`);
 }))
 
