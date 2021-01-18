@@ -4,12 +4,16 @@ const mongoose = require('mongoose');
 const ejsMate = require('ejs-mate');
 const session = require('express-session');
 const flash = require('connect-flash');
-const methodOverride = require('method-override');
 const ExpressError = require('./utils/ExpressError');
+const methodOverride = require('method-override');
+const passport = require('passport');
+const LocalStrategy = require('passport-local');
+const User = require('./models/user');
 
 // require routes, set up route prefix
-const jazzbars = require('./routes/jazzbars');
-const reviews = require('./routes/reviews');
+const userRoutes = require('./routes/users');
+const jazzbarRoutes = require('./routes/jazzbars');
+const reviewRoutes = require('./routes/reviews');
 
 // connect to mongoose
 mongoose.connect('mongodb://localhost:27017/jazz-sky', {
@@ -49,16 +53,32 @@ const sessionConfig = {
 app.use(session(sessionConfig));
 app.use(flash());
 
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
 app.use((req, res, next) => {
+    console.log(req.session);
+    res.locals.currentUser = req.user;
     res.locals.success = req.flash('success');
     res.locals.error = req.flash('error');
     next();
 })
 
+app.get('/fakeUser', async (req, res) => {
+    const user = new User({ email: 'user1@gmail.com', username: 'user1' });
+    const newUser = await User.register(user, 'mypassword');
+    res.send(newUser);
+})
+
 
 // use routes
-app.use('/jazzbars', jazzbars);
-app.use('/jazzbars/:id/reviews', reviews);
+app.use('/', userRoutes);
+app.use('/jazzbars', jazzbarRoutes);
+app.use('/jazzbars/:id/reviews', reviewRoutes);
 
 // home page
 app.get('/', (req, res) => {
