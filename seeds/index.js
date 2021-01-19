@@ -25,6 +25,7 @@ const seedDB = async () => {
         const rand = Math.floor(Math.random() * 1000);
         const price = Math.floor(Math.random() * 20) + 10;
         const jazzbar = new Jazzbar({
+            author: '60053175a4146b0674785cac',
             location: `${cities[rand].city}, ${cities[rand].state}`,
             title: `${sample(descriptors)} ${sample(places)}`,
             image: 'https://source.unsplash.com/collection/9803714/',

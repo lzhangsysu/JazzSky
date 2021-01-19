@@ -1,23 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const catchAsync = require('../utils/catchAsync');
-const { jazzbarSchema } = require('../joiSchemas.js');
-const { isLoggedIn } = require('../middleware');
+const { validateJazzBar, isLoggedIn, isAuthor } = require('../middleware');
 
-
-const ExpressError = require('../utils/ExpressError');
 const Jazzbar = require('../models/jazzbar');
-
-// middlewares to validate jazzbar data using Joi
-const validateJazzBar = (req, res, next) => {
-    const { error } = jazzbarSchema.validate(req.body);
-    if (error) {
-        const errMsg = error.details.map(el => el.message).join(',');
-        throw new ExpressError(errMsg, 400);
-    } else {
-        next();
-    }
-}
 
 // index page: all bars
 router.get('/', catchAsync(async (req, res) => {
@@ -32,8 +18,8 @@ router.get('/new', isLoggedIn, (req, res) => {
 
 // add new bar: post
 router.post('/', isLoggedIn, validateJazzBar, catchAsync(async (req, res, next) => {
-    // if (!req.body.jazzbar) throw new ExpressError('Invalid Jazz Bar Data', 400);
     const jazzbar = new Jazzbar(req.body.jazzbar);
+    jazzbar.author = req.user._id;
     await jazzbar.save();
     req.flash('success', 'Successfully added a new jazz bar!');
     res.redirect(`/jazzbars/${jazzbar._id}`);
@@ -42,7 +28,14 @@ router.post('/', isLoggedIn, validateJazzBar, catchAsync(async (req, res, next) 
 // show bar details page
 router.get('/:id', catchAsync(async (req, res) => {
     const { id } = req.params;
-    const jazzbar = await Jazzbar.findById(id).populate('reviews');
+    const jazzbar = await Jazzbar.findById(id)
+        .populate({
+            path: 'reviews',
+            populate: {
+                path: 'author'
+            }
+        }).populate('author');
+    console.log(jazzbar);
     if (!jazzbar) {
         req.flash('error', 'Cannot find that jazz bar!');
         return res.redirect('/jazzbars');
@@ -51,8 +44,9 @@ router.get('/:id', catchAsync(async (req, res) => {
 }));
 
 // update bar: form
-router.get('/:id/edit', isLoggedIn, catchAsync(async (req, res) => {
-    const jazzbar = await Jazzbar.findById(req.params.id);
+router.get('/:id/edit', isLoggedIn, isAuthor, catchAsync(async (req, res) => {
+    const { id } = req.params;
+    const jazzbar = await Jazzbar.findById(id);
     if (!jazzbar) {
         req.flash('error', 'Cannot find that jazz bar!');
         return res.redirect('/jazzbars');
@@ -61,7 +55,7 @@ router.get('/:id/edit', isLoggedIn, catchAsync(async (req, res) => {
 }));
 
 // update bar: update
-router.put('/:id', isLoggedIn, validateJazzBar, catchAsync(async (req, res) => {
+router.put('/:id', isLoggedIn, isAuthor, validateJazzBar, catchAsync(async (req, res) => {
     const { id } = req.params;
     const jazzbar = await Jazzbar.findByIdAndUpdate(id, { ...req.body.jazzbar });
     req.flash('success', 'Successfully updated jazz bar!');
@@ -69,7 +63,7 @@ router.put('/:id', isLoggedIn, validateJazzBar, catchAsync(async (req, res) => {
 }));
 
 // delete bar
-router.delete('/:id', isLoggedIn, catchAsync(async (req, res) => {
+router.delete('/:id', isLoggedIn, isAuthor, catchAsync(async (req, res) => {
     const { id } = req.params;
     await Jazzbar.findByIdAndDelete(id);
     req.flash('success', 'Successfully deleted jazz bar!');
