@@ -3,11 +3,13 @@ const router = express.Router();
 const jazzbars = require('../controllers/jazzbars');
 const catchAsync = require('../utils/catchAsync');
 const { validateJazzBar, isLoggedIn, isAuthor } = require('../middleware');
-
+const multer = require('multer');
+const { storage } = require('../cloudinary');
+const upload = multer({ storage });
 
 router.route('/')
-    .get(catchAsync(jazzbars.index))                                               // index page: all bars
-    .post(isLoggedIn, validateJazzBar, catchAsync(jazzbars.createJazzbar));        // add new bar: post
+    .get(catchAsync(jazzbars.index))                                                                      // index page: all bars
+    .post(isLoggedIn, upload.array('image'), validateJazzBar, catchAsync(jazzbars.createJazzbar));        // add new bar: post
 
 // add new bar: submission page only if logged in
 router.get('/new', isLoggedIn, jazzbars.renderNewForm);

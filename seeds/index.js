@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const cities = require('./cities');
-const { places, descriptors } = require('./seedHelpers');
+const { places, descriptors, images } = require('./seedHelpers');
 const Jazzbar = require('../models/jazzbar');
 
 mongoose.connect('mongodb://localhost:27017/jazz-sky', {
@@ -28,9 +28,9 @@ const seedDB = async () => {
             author: '60053175a4146b0674785cac',
             location: `${cities[rand].city}, ${cities[rand].state}`,
             title: `${sample(descriptors)} ${sample(places)}`,
-            image: 'https://source.unsplash.com/collection/9803714/',
             description: 'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quia, obcaecati accusantium! Aperiam, ut harum quaerat voluptatem blanditiis qui sed, suscipit quos enim possimus temporibus quidem laborum libero facere. Id, neque!',
-            price
+            price,
+            images: [images[Math.floor(Math.random() * 20)], images[Math.floor(Math.random() * 20)]]
         });
         await jazzbar.save();
     }

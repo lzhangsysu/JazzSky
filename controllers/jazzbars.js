@@ -11,8 +11,10 @@ module.exports.renderNewForm = (req, res) => {
 
 module.exports.createJazzbar = async (req, res, next) => {
     const jazzbar = new Jazzbar(req.body.jazzbar);
+    jazzbar.images = req.files.map( f => ({ url: f.path, filename: f.filename }));
     jazzbar.author = req.user._id;
     await jazzbar.save();
+    console.log(jazzbar);
     req.flash('success', 'Successfully added a new jazz bar!');
     res.redirect(`/jazzbars/${jazzbar._id}`);
 }
