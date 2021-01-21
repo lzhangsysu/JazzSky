@@ -16,7 +16,7 @@ router.get('/new', isLoggedIn, jazzbars.renderNewForm);
 
 router.route('/:id')
     .get(catchAsync(jazzbars.showJazzbar))                                        // show bar details page
-    .put(isLoggedIn, isAuthor, validateJazzBar, catchAsync(jazzbars.editJazzbar)) // update bar: update
+    .put(isLoggedIn, isAuthor, upload.array('image'), validateJazzBar, catchAsync(jazzbars.editJazzbar)) // update bar: update
     .delete(isLoggedIn, isAuthor, catchAsync(jazzbars.deleteJazzbar));            // delete bar
 
 // update bar: form

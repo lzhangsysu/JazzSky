@@ -2,14 +2,18 @@ const mongoose = require('mongoose');
 const Review = require('./review');
 const Schema = mongoose.Schema;
 
+const ImageSchema = new Schema({
+    url: String,
+    filename: String
+})
+// virtual: derived property on schema, won't be stored in db. only work on schema
+ImageSchema.virtual('thumbnail').get(function() {
+    return this.url.replace('/upload', '/upload/w_200'); // change url for creating cloudinary thumbnail 
+});
+
 const JazzbarSchema = new Schema({
     title: String,
-    images: [
-        {
-            url: String,
-            filename: String
-        }
-    ],
+    images: [ImageSchema],
     price: Number,
     description: String,
     location: String,
@@ -25,7 +29,7 @@ const JazzbarSchema = new Schema({
     ]
 });
 
-JazzbarSchema.post('findOneAndDelete', async function(doc) {
+JazzbarSchema.post('findOneAndDelete', async function (doc) {
     if (doc) {
         await Review.deleteMany({
             _id: { $in: doc.reviews }
