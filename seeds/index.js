@@ -30,6 +30,10 @@ const seedDB = async () => {
             title: `${sample(descriptors)} ${sample(places)}`,
             description: 'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quia, obcaecati accusantium! Aperiam, ut harum quaerat voluptatem blanditiis qui sed, suscipit quos enim possimus temporibus quidem laborum libero facere. Id, neque!',
             price,
+            geometry: {
+                type: "Point",
+                coordinates : [ -117.826, 33.6857 ] 
+            },
             images: [images[Math.floor(Math.random() * 20)], images[Math.floor(Math.random() * 20)]]
         });
         await jazzbar.save();

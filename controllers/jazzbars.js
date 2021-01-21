@@ -1,4 +1,7 @@
 const Jazzbar = require('../models/jazzbar');
+const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
+const mapBoxToken = process.env.MAPBOX_TOKEN;
+const geocoder = mbxGeocoding({ accessToken: mapBoxToken });
 const { cloudinary } = require("../cloudinary");
 
 module.exports.index = async (req, res) => {
@@ -11,7 +14,12 @@ module.exports.renderNewForm = (req, res) => {
 }
 
 module.exports.createJazzbar = async (req, res, next) => {
+    const geoData = await geocoder.forwardGeocode({
+        query: req.body.jazzbar.location,
+        limit: 1
+    }).send()
     const jazzbar = new Jazzbar(req.body.jazzbar);
+    jazzbar.geometry = geoData.body.features[0].geometry;  // geoJson
     jazzbar.images = req.files.map( f => ({ url: f.path, filename: f.filename }));  // images
     jazzbar.author = req.user._id;
     await jazzbar.save();
