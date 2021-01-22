@@ -6,10 +6,14 @@ const ImageSchema = new Schema({
     url: String,
     filename: String
 })
+
 // virtual: derived property on schema, won't be stored in db. only work on schema
-ImageSchema.virtual('thumbnail').get(function() {
+ImageSchema.virtual('thumbnail').get(function () {
     return this.url.replace('/upload', '/upload/w_200'); // change url for creating cloudinary thumbnail 
 });
+
+// mongoose by default don't include virtual when convert to JSON
+const opts = { toJSON: { virtuals: true } };
 
 const JazzbarSchema = new Schema({
     title: String,
@@ -22,7 +26,7 @@ const JazzbarSchema = new Schema({
         },
         coordinates: {
             type: [Number],
-            required:true
+            required: true
         }
     },
     price: Number,
@@ -38,7 +42,13 @@ const JazzbarSchema = new Schema({
             ref: 'Review'
         }
     ]
-});
+}, opts);
+
+// GeoJson require properties in "property" to be accessible
+JazzbarSchema.virtual('properties.popUpMarkup').get(function () {
+    return `<strong><a href="/jazzbars/${this._id}">${this.title}</a></strong>`;
+})
+
 
 JazzbarSchema.post('findOneAndDelete', async function (doc) {
     if (doc) {

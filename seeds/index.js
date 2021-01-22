@@ -21,7 +21,7 @@ const sample = (arr) => arr[Math.floor(Math.random() * arr.length)];
 // fake seed data to populate db
 const seedDB = async () => {
     await Jazzbar.deleteMany({});
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < 300; i++) {
         const rand = Math.floor(Math.random() * 1000);
         const price = Math.floor(Math.random() * 20) + 10;
         const jazzbar = new Jazzbar({
@@ -32,7 +32,10 @@ const seedDB = async () => {
             price,
             geometry: {
                 type: "Point",
-                coordinates : [ -117.826, 33.6857 ] 
+                coordinates : [
+                    cities[rand].longitude,
+                    cities[rand].latitude
+                ]
             },
             images: [images[Math.floor(Math.random() * 20)], images[Math.floor(Math.random() * 20)]]
         });
