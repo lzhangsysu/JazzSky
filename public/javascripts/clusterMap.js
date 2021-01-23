@@ -2,11 +2,13 @@ mapboxgl.accessToken = mapToken;
 
 // generic map
 const map = new mapboxgl.Map({
-    container: 'map',
+    container: 'cluster-map', // html id
     style: 'mapbox://styles/mapbox/dark-v10',
     center: [-103.59179687498357, 40.66995747013945],
     zoom: 3
 });
+
+map.addControl(new mapboxgl.NavigationControl());
 
 map.on('load', function () {
     // Add a new source from our GeoJSON data and
@@ -37,18 +39,18 @@ map.on('load', function () {
                 'step',
                 ['get', 'point_count'],
                 '#51bbd6',
-                10,
+                5,
                 '#f1f075',
-                50,
+                20,
                 '#f28cb1'
             ],
             'circle-radius': [
                 'step',
                 ['get', 'point_count'],
                 15,
-                10,
+                5,
                 25,
-                50,
+                20,
                 40
             ]
         }

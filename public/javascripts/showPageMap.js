@@ -6,6 +6,8 @@ const map = new mapboxgl.Map({
     zoom: 13 // starting zoom
 });
 
+map.addControl(new mapboxgl.NavigationControl());
+
 new mapboxgl.Marker()
     .setLngLat(jazzbar.geometry.coordinates)
     .setPopup(

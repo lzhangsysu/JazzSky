@@ -21,7 +21,7 @@ const sample = (arr) => arr[Math.floor(Math.random() * arr.length)];
 // fake seed data to populate db
 const seedDB = async () => {
     await Jazzbar.deleteMany({});
-    for (let i = 0; i < 300; i++) {
+    for (let i = 0; i < 50; i++) {
         const rand = Math.floor(Math.random() * 1000);
         const price = Math.floor(Math.random() * 20) + 10;
         const jazzbar = new Jazzbar({
