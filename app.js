@@ -15,6 +15,9 @@ const LocalStrategy = require('passport-local');
 const mongoSanitize = require('express-mongo-sanitize');
 const helmet = require('helmet');
 const User = require('./models/user');
+const MongoDBStore = require("connect-mongo")(session);
+
+const dbUrl = process.env.DB_URL || 'mongodb://localhost:27017/jazz-sky';
 
 // require routes, set up route prefix
 const userRoutes = require('./routes/users');
@@ -22,7 +25,8 @@ const jazzbarRoutes = require('./routes/jazzbars');
 const reviewRoutes = require('./routes/reviews');
 
 // connect to mongoose
-mongoose.connect('mongodb://localhost:27017/jazz-sky', {
+// 'mongodb://localhost:27017/jazz-sky'
+mongoose.connect(dbUrl, {
     useNewUrlParser: true,
     useCreateIndex: true,
     useFindAndModify: false,
@@ -49,9 +53,22 @@ app.use(mongoSanitize({  // to prohibit certain characters in query
     replaceWith: '_'
 }));
 
+const secret = process.env.SECRET || 'thisisnotagoodsecret';
+
+const store = new MongoDBStore({
+    url: dbUrl,
+    secret,
+    touchAfter: 24 * 60 * 60
+});
+
+store.on("error", function (e) {
+    console.log("SESSION STORE ERROR", e);
+})
+
 const sessionConfig = {
+    store,
     name: 'session',
-    secret: 'thisisnotagoodsecret',
+    secret,
     resave: false,
     saveUninitialized: true,
     cookie: {

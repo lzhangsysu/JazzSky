@@ -37,7 +37,7 @@ const seedDB = async () => {
                     cities[rand].latitude
                 ]
             },
-            images: [images[Math.floor(Math.random() * 20)], images[Math.floor(Math.random() * 20)]]
+            images: [images[Math.floor(Math.random() * 19)], images[Math.floor(Math.random() * 19)]]
         });
         await jazzbar.save();
     }

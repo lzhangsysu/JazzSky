@@ -43,6 +43,8 @@ module.exports.places = [
     'Band'
 ]
 
+
+
 module.exports.images = [
     {
       url: 'https://res.cloudinary.com/zltc1206/image/upload/v1611123578/JazzSky/gwdlvatb09uze3m8ibcf.jpg',
@@ -63,10 +65,6 @@ module.exports.images = [
     {
       url: 'https://res.cloudinary.com/zltc1206/image/upload/v1611123590/JazzSky/glsrophp0umluufwensd.jpg',
       filename: 'JazzSky/glsrophp0umluufwensd'
-    },
-    {
-      url: 'https://res.cloudinary.com/zltc1206/image/upload/v1611123592/JazzSky/kygfay0mdrsh7wqdkv7c.jpg',
-      filename: 'JazzSky/kygfay0mdrsh7wqdkv7c'
     },
     {
       url: 'https://res.cloudinary.com/zltc1206/image/upload/v1611123600/JazzSky/po9gczyv8osum7ep3dsu.jpg',
