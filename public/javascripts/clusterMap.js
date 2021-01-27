@@ -48,9 +48,9 @@ map.on('load', function () {
                 'step',
                 ['get', 'point_count'],
                 15,
-                5,
+                10,
                 25,
-                20,
+                50,
                 40
             ]
         }
